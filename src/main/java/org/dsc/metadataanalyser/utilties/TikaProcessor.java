@@ -8,9 +8,10 @@ import java.util.Map;
 
 public class TikaProcessor {
     private TikaRequest tr = new TikaRequest();
+    private String file;
 
     public File[] getFileListToProcess() {
-        File f = new File("G:\\SampleFiles\\SampleFiles");
+        File f = new File(this.file);
         return f.listFiles();
 
     }
@@ -50,5 +51,8 @@ public class TikaProcessor {
     }
 
 
+    public void setFile(String file) {
+        this.file = file;
+    }
 }
 

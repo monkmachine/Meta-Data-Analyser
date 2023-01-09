@@ -16,7 +16,7 @@ public class SQLLiteDB {
         stmt.close();
     }
     public ResultSet runStatement (Connection con) throws SQLException {
-        Statement  st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        return st.executeQuery("select cast(value as Integer),text from (SELECT count(\"MetaDataKey\") as value,\"MetaDataKey\" as text FROM \"MetaData\".\"MetaData\" where \"Active\" IS null group by \"MetaDataKey\") t1 order by value desc limit 100");
+        Statement  st = con.createStatement();
+        return st.executeQuery("select cast(value as Integer) as value,text from (SELECT count(MetaDataKey) as value,MetaDataKey as text FROM MetaData group by MetaDataKey)order by value desc limit 100");
     }
 }

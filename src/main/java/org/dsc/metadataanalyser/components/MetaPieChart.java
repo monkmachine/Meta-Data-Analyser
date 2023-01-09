@@ -13,8 +13,6 @@ public class MetaPieChart {
 
     public PieChart setUpPieChart(ResultSet rs, PieChart pie, ObservableList<PieChart.Data> pieData) throws SQLException {
 
-        rs.beforeFirst();
-
         while (true) {
             try {
                 if (!rs.next()) break;

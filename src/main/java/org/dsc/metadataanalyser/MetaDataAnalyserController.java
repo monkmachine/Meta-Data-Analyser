@@ -123,6 +123,15 @@ public class MetaDataAnalyserController implements Initializable {
         setMetaTableView();
         MetaPieChart mpc = new MetaPieChart();
         try {
+            rs.beforeFirst();
+        } catch (SQLException e) {
+            try {
+                rs = dbCon.runSelectStatement();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        try {
             pie = mpc.setUpPieChart(rs, pie, pieData);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -203,6 +212,7 @@ public class MetaDataAnalyserController implements Initializable {
         TikaProcessor tp = new TikaProcessor();
 
         protected Void call() throws Exception {
+            tp.setFile(inSelectedFolder.getText());
             File[] pathNames = tp.getFileListToProcess();
             dbCon.setJDBCUrl(jdbcUrl.getText());
             dbCon.setDbType(dbDropDown.getSelectionModel().getSelectedItem());

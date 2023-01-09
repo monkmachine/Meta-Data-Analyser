@@ -85,6 +85,7 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     public void onTestConnection() {
         dbCon.setJDBCUrl(jdbcUrl.getText());
+        dbCon.setDbType(dbDropDown.getSelectionModel().getSelectedItem());
         setConnectionTestLabel();
     }
 
@@ -204,6 +205,7 @@ public class MetaDataAnalyserController implements Initializable {
         protected Void call() throws Exception {
             File[] pathNames = tp.getFileListToProcess();
             dbCon.setJDBCUrl(jdbcUrl.getText());
+            dbCon.setDbType(dbDropDown.getSelectionModel().getSelectedItem());
             try {
                 dbCon.setDBConnection();
             } catch (SQLException e) {

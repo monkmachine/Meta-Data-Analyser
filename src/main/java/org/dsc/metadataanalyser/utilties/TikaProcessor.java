@@ -10,7 +10,7 @@ public class TikaProcessor {
     private TikaRequest tr = new TikaRequest();
 
     public File[] getFileListToProcess() {
-        File f = new File("G:\\SampleFiles");
+        File f = new File("G:\\SampleFiles\\SampleFiles");
         return f.listFiles();
 
     }

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class JsonReader {
 
-    JsonFactory jfactory = JsonFactory.builder()
+    final JsonFactory jfactory = JsonFactory.builder()
             .enable(JsonReadFeature.ALLOW_MISSING_VALUES,
                     JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS,
                     JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER,

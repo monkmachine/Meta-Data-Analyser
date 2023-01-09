@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class TikaProcessor {
-    private TikaRequest tr = new TikaRequest();
+    private final TikaRequest tr = new TikaRequest();
     private String file;
 
     public File[] getFileListToProcess() {

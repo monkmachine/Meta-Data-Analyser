@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ResultSetTableView extends TableView {
 
-    private ResultSet resultSet;
+    private final ResultSet resultSet;
 
-    private List<String> columnNames = new ArrayList<>();
+    private final List<String> columnNames = new ArrayList<>();
 
     public ResultSetTableView(ResultSet rs) throws SQLException {
         super();
@@ -32,6 +32,7 @@ public class ResultSetTableView extends TableView {
 
             final int j = i;
             TableColumn col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
+            //noinspection unchecked
             col.setCellValueFactory((Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>) param -> {
                 if (param.getValue().get(j) != null) {
                     return new SimpleStringProperty(param.getValue().get(j).toString());
@@ -40,9 +41,9 @@ public class ResultSetTableView extends TableView {
                 }
             });
 
+            //noinspection unchecked
             getColumns().addAll(col);
             this.columnNames.add(col.getText());
-
         }
 
         while (resultSet.next()) {
@@ -57,6 +58,7 @@ public class ResultSetTableView extends TableView {
         }
 
         //FINALLY ADDED TO TableView
+        //noinspection unchecked
         setItems(data);
     }
 

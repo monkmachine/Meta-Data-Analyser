@@ -1,8 +1,10 @@
 package org.dsc.metadataanalyser.dataClasses;
 
 public class jdbcDetails {
-    private String url;
-
+    private final String url;
+    private final String user ;
+    private final String password;
+    private final String dBType;
     public String getUrl() {
         return url;
     }
@@ -11,17 +13,20 @@ public class jdbcDetails {
         return user;
     }
 
-    private String user ;
-
     public String getPassword() {
         return password;
     }
 
-    private String password;
+    public String getdBType() {
+        return dBType;
+    }
 
-    public jdbcDetails(String url, String text1, String text2) {
+
+
+    public jdbcDetails(String url, String user, String password, String dBType) {
         this.url = url;
-        this.user = text1;
-        this.password=text2;
+        this.user = user;
+        this.password=password;
+        this.dBType =dBType;
     }
 }

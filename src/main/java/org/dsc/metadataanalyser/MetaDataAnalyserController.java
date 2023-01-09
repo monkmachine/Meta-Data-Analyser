@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.dsc.metadataanalyser.components.MetaPieChart;
 import org.dsc.metadataanalyser.dataClasses.MetaData;
+import org.dsc.metadataanalyser.dataClasses.jdbcDetails;
 import org.dsc.metadataanalyser.utilties.*;
 
 import java.io.File;
@@ -60,6 +61,7 @@ public class MetaDataAnalyserController implements Initializable {
     private final ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
     private final DBConnection dbCon = new DBConnection();
     private final FolderChooser fc = new FolderChooser();
+    private jdbcDetails jdbcDetails;
 
     public void initialize(URL location, ResourceBundle resources) {
         dbDropDown.setItems(dbCon.getDbDropDownOptions());
@@ -84,8 +86,7 @@ public class MetaDataAnalyserController implements Initializable {
 
     @FXML
     public void onTestConnection() {
-        dbCon.setJDBCUrl(jdbcUrl.getText());
-        dbCon.setDbType(dbDropDown.getSelectionModel().getSelectedItem());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
         setConnectionTestLabel();
     }
 
@@ -112,7 +113,8 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     public void populateData() {
-        dbCon.setJDBCUrl(jdbcUrl.getText());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+        dbCon.setJdbcDetails(jdbcDetails);
         onTestConnection();
         try {
             rs = dbCon.runSelectStatement();
@@ -186,6 +188,8 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     protected void setConnectionTestLabel() {
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+        dbCon.setJdbcDetails(jdbcDetails);
         try {
             dbCon.setDBConnection();
             connectionTest.setTextFill(Color.rgb(45, 189, 45));
@@ -214,8 +218,8 @@ public class MetaDataAnalyserController implements Initializable {
         protected Void call() throws Exception {
             tp.setFile(inSelectedFolder.getText());
             File[] pathNames = tp.getFileListToProcess();
-            dbCon.setJDBCUrl(jdbcUrl.getText());
-            dbCon.setDbType(dbDropDown.getSelectionModel().getSelectedItem());
+            jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+            dbCon.setJdbcDetails(jdbcDetails);
             try {
                 dbCon.setDBConnection();
             } catch (SQLException e) {

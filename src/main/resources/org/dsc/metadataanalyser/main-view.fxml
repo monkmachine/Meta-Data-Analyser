@@ -4,7 +4,9 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
@@ -23,7 +25,7 @@
 <VBox alignment="CENTER" prefHeight="1202.0" prefWidth="1599.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dsc.metadataanalyser.MetaDataAnalyserController">
    <TabPane prefHeight="1202.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE">
      <tabs>
-       <Tab text="Untitled Tab 1">
+       <Tab text="Main Page">
          <content>
              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                  <VBox prefHeight="1173.0" prefWidth="766.0">
@@ -121,7 +123,7 @@
              </AnchorPane>
          </content>
        </Tab>
-       <Tab text="Untitled Tab 2">
+       <Tab text="Data">
          <content>
            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
@@ -131,7 +133,14 @@
                                <children>
                                    <TableView fx:id="tableView" prefHeight="1032.0" prefWidth="555.0">
                                        <columns>
-                                           <TableColumn fx:id="metaDataKey" prefWidth="264.0" text="MetaDataKey" />
+                                           <TableColumn fx:id="metaDataKey" prefWidth="264.0" text="MetaDataKey">
+                                          <contextMenu>
+                                             <ContextMenu>
+                                               <items>
+                                                 <MenuItem mnemonicParsing="false" text="View Data" />
+                                               </items>
+                                             </ContextMenu>
+                                          </contextMenu></TableColumn>
                                            <TableColumn fx:id="count" prefWidth="85.0" text="count" />
                                        </columns>
                                    </TableView>

@@ -101,15 +101,17 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     public void killThread() {
+        if(metaScrapeThread != null){
         metaScrapeThread.interrupt();
         bar.progressProperty().unbind();
         bar.progressProperty().set(0);
-        try {
-            dbCon.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            try {
+                dbCon.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            progressTxt.setText("Process Stopped");
         }
-        progressTxt.setText("Process Stopped");
     }
 
     public void populateData() {

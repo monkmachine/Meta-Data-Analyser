@@ -87,6 +87,9 @@ public class DBConnection {
     }
 
     public void close() throws SQLException {
-        con.close();
+        if (con != null) {
+            con.close();
+        }
+
     }
 }

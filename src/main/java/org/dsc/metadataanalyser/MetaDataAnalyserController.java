@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 import org.dsc.metadataanalyser.components.MetaPieChart;
 import org.dsc.metadataanalyser.dataClasses.MetaData;
 import org.dsc.metadataanalyser.dataClasses.jdbcDetails;
@@ -56,10 +55,18 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     private TableColumn<MetaData, String> metaDataKey = new TableColumn<>("Value");
     @FXML
+    private TableColumn<MetaData, Number> duplicatesCount = new TableColumn<>("count");
+    @FXML
+    private TableColumn<MetaData, String> duplicatesValue = new TableColumn<>("Value");
+
+    @FXML
+    private TableView<MetaData> duplicatesTableView = new TableView<>();
+    @FXML
     private PieChart pie;
     @FXML
     ResultSet rs;
     private final ObservableList<MetaData> data = FXCollections.observableArrayList();
+    private final ObservableList<MetaData> duplicatesData = FXCollections.observableArrayList();
     private final ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
     private final DBConnection dbCon = new DBConnection();
     private final FolderChooser fc = new FolderChooser();
@@ -117,11 +124,12 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     public void populateData() {
+        data.clear();
         jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
         dbCon.setJdbcDetails(jdbcDetails);
         onTestConnection();
         try {
-            rs = dbCon.runSelectStatement();
+            rs = dbCon.runKeyAnalysisStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -132,7 +140,7 @@ public class MetaDataAnalyserController implements Initializable {
             rs.beforeFirst();
         } catch (SQLException e) {
             try {
-                rs = dbCon.runSelectStatement();
+                rs = dbCon.runKeyAnalysisStatement();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -142,6 +150,18 @@ public class MetaDataAnalyserController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        try {
+            rs = dbCon.runKeyAnalysisStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            rs = dbCon.runDuplicatesStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        setDuplicatesTableView();
+
     }
 
     private void setMetaTableView() {
@@ -158,15 +178,6 @@ public class MetaDataAnalyserController implements Initializable {
 
             }
             tableView.setItems(data);
-            tableView.getItems().forEach(data -> {
-                        Tooltip tooltip = new Tooltip();
-                        Duration duration = Duration.millis(1);
-                        tooltip.setShowDelay(duration);
-                        tooltip.setText(data.getMetaDataKey());
-
-                    }
-            );
-            System.out.println(tableView.getColumns());
             tableView.setOnMouseClicked((MouseEvent event) -> {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
                     System.out.println(tableView.getSelectionModel().getSelectedItem());
@@ -176,7 +187,31 @@ public class MetaDataAnalyserController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+    private void setDuplicatesTableView() {
+        duplicatesCount.setCellValueFactory(cellData -> cellData.getValue().getCountProperty());
+        duplicatesValue.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
+        try {
+            while (true) {
+                try {
+                    if (!rs.next()) break;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), ""));
 
+            }
+            duplicatesTableView.setItems(duplicatesData);
+            duplicatesTableView.setOnMouseClicked((MouseEvent event) -> {
+                if(event.getButton().equals(MouseButton.PRIMARY)){
+                    System.out.println(duplicatesTableView.getSelectionModel().getSelectedItem());
+                    System.out.println(duplicatesTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
     protected void setSelectedFolder(String inOutFolder) {
         File file = fc.directoryChooser();
         setFolderLabel(file, inOutFolder);

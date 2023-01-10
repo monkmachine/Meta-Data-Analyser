@@ -23,7 +23,7 @@ public class MetaData extends Node {
     public int getCount() {
         return count.get();
     }
-public IntegerProperty getCountProperty(){
+    public IntegerProperty getCountProperty(){
         return this.count;
 }
     public String getMetaDataKey() {

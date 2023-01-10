@@ -45,8 +45,6 @@ public class MetaDataAnalyserController implements Initializable {
     public Button runProcess;
     public Button stopProcess;
     @FXML
-    public DialogPane reportingPane;
-    @FXML
     ComboBox<String> dbDropDown;
     @FXML
     private ProgressBar bar;
@@ -222,9 +220,10 @@ public class MetaDataAnalyserController implements Initializable {
         metaScrapeThread.start();
     }
 
-    //this needs refactoring
+    //TODO this needs refactoring
     class processFolder extends Task<Void> {
         TikaProcessor tp = new TikaProcessor();
+
 
         protected Void call() throws Exception {
             tp.setFile(inSelectedFolder.getText());

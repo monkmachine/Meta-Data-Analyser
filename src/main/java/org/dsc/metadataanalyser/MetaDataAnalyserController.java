@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.dsc.metadataanalyser.components.MetaPieChart;
@@ -42,6 +44,8 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     public Button runProcess;
     public Button stopProcess;
+    @FXML
+    public DialogPane reportingPane;
     @FXML
     ComboBox<String> dbDropDown;
     @FXML
@@ -165,6 +169,11 @@ public class MetaDataAnalyserController implements Initializable {
                     }
             );
             System.out.println(tableView.getColumns());
+            tableView.setOnMouseClicked((MouseEvent event) -> {
+                if(event.getButton().equals(MouseButton.PRIMARY)){
+                    System.out.println(tableView.getSelectionModel().getSelectedItem());
+                }
+            });
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

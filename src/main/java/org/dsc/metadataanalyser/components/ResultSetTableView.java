@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("rawtypes")
 public class ResultSetTableView extends TableView {
 
     private final ResultSet resultSet;
@@ -62,7 +63,4 @@ public class ResultSetTableView extends TableView {
         setItems(data);
     }
 
-    public List<String> getColumnNames() {
-        return columnNames;
-    }
 }

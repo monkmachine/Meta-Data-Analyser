@@ -65,18 +65,36 @@ public class DBConnection {
         if (Objects.equals(this.dBType, "Postgres")) {
             pg.runStatement(con, name, key, value);
         } else if (this.dBType.equals("SQLite")) {
-            sqlLiteDB.runStatement(con, name, key, value);
+            sqlLiteDB.runKeyAnalysisStatement(con, name, key, value);
         } else {
             throw new SQLException("");
         }
 
     }
 
-    public ResultSet runSelectStatement() throws SQLException {
+    public ResultSet runKeyAnalysisStatement() throws SQLException {
         if (this.dBType.equals("Postgres")) {
             return pg.runStatement(con);
         } else if (this.dBType.equals("SQLite")) {
-            return sqlLiteDB.runStatement(con);
+            return sqlLiteDB.runKeyAnalysisStatement(con);
+        } else {
+            throw new SQLException("");
+        }
+    }
+    public ResultSet runDuplicatesStatement() throws SQLException {
+        if (this.dBType.equals("Postgres")) {
+            return pg.runStatement(con);
+        } else if (this.dBType.equals("SQLite")) {
+            return sqlLiteDB.runDuplicatesStatement(con);
+        } else {
+            throw new SQLException("");
+        }
+    }
+    public ResultSet runDuplicatesDrillStatement(String metaDataKey) throws SQLException {
+        if (this.dBType.equals("Postgres")) {
+            return pg.runStatement(con);
+        } else if (this.dBType.equals("SQLite")) {
+            return sqlLiteDB.runDuplicatesDrillStatement(con,metaDataKey);
         } else {
             throw new SQLException("");
         }

@@ -7,6 +7,7 @@ public class PostgresDB {
 
     private static final String SQL_INSERT = "INSERT INTO \"MetaData\".\"MetaData\"(\"FileName\", \"MetaDataKey\", \"Value\")VALUES (?, ?, ?)";
 
+
     public void runStatement (Connection con, String file, String metaDataKey, String value) throws SQLException {
         PreparedStatement st = con.prepareStatement(SQL_INSERT);
         st.setString(1, file);

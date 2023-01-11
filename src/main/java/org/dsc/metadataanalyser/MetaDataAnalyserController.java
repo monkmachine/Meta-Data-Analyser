@@ -50,9 +50,9 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     private ProgressBar bar;
     @FXML
-    private TableView<MetaData> duplicatesDrilldown = new TableView<>();
+    private TableView<MetaData> dupesDrillTableView = new TableView<>();
     @FXML
-    private TableView<MetaData> tableView = new TableView<>();
+    private TableView<MetaData> keysCountTableView = new TableView<>();
     @FXML
     private TableView<MetaData> duplicatesTableView = new TableView<>();
     @FXML
@@ -191,11 +191,11 @@ public class MetaDataAnalyserController implements Initializable {
                 data.add(new MetaData(rs.getInt("value"), rs.getString("text"), "","","","",""));
 
             }
-            tableView.setItems(data);
-            tableView.setOnMouseClicked((MouseEvent event) -> {
+            keysCountTableView.setItems(data);
+            keysCountTableView.setOnMouseClicked((MouseEvent event) -> {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
-                    if(tableView.getSelectionModel().getSelectedItem().getMetaDataKey()!=null){
-                        keysDrilldownTableView(tableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    if(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey()!=null){
+                        keysDrilldownTableView(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
                     }
                 }
             });
@@ -247,18 +247,18 @@ public class MetaDataAnalyserController implements Initializable {
                 duplicatesFileNamesdata.add(new MetaData(0, "", "",rs.getString("fileName"),"","",""));
 
             }
-            duplicatesDrilldown.setItems(duplicatesFileNamesdata);
-            duplicatesDrilldown.setOnMouseClicked((MouseEvent event) -> {
+            dupesDrillTableView.setItems(duplicatesFileNamesdata);
+            dupesDrillTableView.setOnMouseClicked((MouseEvent event) -> {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
-                    if(duplicatesDrilldown.getSelectionModel().getSelectedItem() !=null){
-                        System.out.println(duplicatesDrilldown.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    if(dupesDrillTableView.getSelectionModel().getSelectedItem() !=null){
+                        System.out.println(dupesDrillTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
                     }
                 }
             });
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        duplicatesDrilldown.setVisible(true);
+        dupesDrillTableView.setVisible(true);
 
 
     }

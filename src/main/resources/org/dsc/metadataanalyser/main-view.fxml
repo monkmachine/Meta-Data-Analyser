@@ -22,172 +22,185 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" prefHeight="1202.0" prefWidth="1599.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dsc.metadataanalyser.MetaDataAnalyserController">
-   <TabPane prefHeight="1202.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-     <tabs>
-       <Tab text="Main Page">
-         <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                 <VBox prefHeight="1173.0" prefWidth="766.0">
-                     <children>
-                         <VBox prefHeight="70.0" prefWidth="799.0">
-                             <VBox alignment="TOP_RIGHT" prefHeight="39.0" prefWidth="496.0">
-                                 <GridPane prefHeight="65.0" prefWidth="500.0">
-                                     <columnConstraints>
-                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="373.0" minWidth="10.0" prefWidth="318.0" />
-                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="300.0" />
-                                     </columnConstraints>
-                                     <rowConstraints>
-                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                     </rowConstraints>
-                                     <Button contentDisplay="RIGHT" onAction="#onInSelectedFolderButtonClick" prefHeight="25.0" prefWidth="134.0" text="Select Folder" GridPane.columnIndex="1" />
-                                     <Label prefHeight="17.0" prefWidth="277.0" text="Select Input Folder" />
-                                     <Label fx:id="inSelectedFolder" text="G:\SampleFiles" GridPane.rowIndex="1" />
-                                 </GridPane>
-                             </VBox>
-                         </VBox>
-                         <VBox prefHeight="70.0" prefWidth="739.0">
-                             <GridPane maxWidth="739.0" prefHeight="40.0" prefWidth="732.0">
-                                 <columnConstraints>
-                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="373.0" minWidth="10.0" prefWidth="316.0" />
-                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0" prefWidth="302.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                     <RowConstraints maxHeight="28.0" minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <Button contentDisplay="RIGHT" onAction="#onOutSelectedFolderButtonClick" prefHeight="25.0" prefWidth="134.0" text="Select Folder" GridPane.columnIndex="1" />
-                                 <Label prefHeight="17.0" prefWidth="339.0" text="Select Output Folder" />
-                                 <Label fx:id="outSelectedFolder" text="G:\temp" GridPane.rowIndex="1" />
-                             </GridPane>
-                         </VBox>
-                         <VBox prefHeight="300.0" prefWidth="739.0">
-                             <GridPane maxWidth="739.0" prefHeight="285.0" prefWidth="739.0">
-                                 <columnConstraints>
-                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="379.0" minWidth="10.0" prefWidth="372.0" />
-                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0" prefWidth="367.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                     <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="45.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="35.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                     <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <Label prefHeight="17.0" prefWidth="162.0" text="Database Connection" />
-                                 <Label prefHeight="17.0" prefWidth="113.0" text="Database" GridPane.rowIndex="1" />
-                                 <Label prefHeight="17.0" prefWidth="121.0" text="JDBC URL" GridPane.rowIndex="2" />
-                                 <ComboBox fx:id="dbDropDown" onAction="#onChangeDbDropDown" prefHeight="25.0" prefWidth="366.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                 <Label text="User Id" GridPane.rowIndex="3" />
-                                 <Label text="Password" GridPane.rowIndex="4" />
-                                 <TextField fx:id="jdbcUrl" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                 <TextField fx:id="userId" text="postgres" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                 <PasswordField fx:id="password" prefHeight="25.0" prefWidth="253.0" text="1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                 <Button fx:id="testConnection" mnemonicParsing="false" onAction="#onTestConnection" prefHeight="25.0" prefWidth="140.0" text="Test Connection" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-                                 <Label fx:id="connectionTest" GridPane.halignment="LEFT" GridPane.rowIndex="5" GridPane.rowSpan="2147483647" GridPane.valignment="TOP" />
-                                 <Button mnemonicParsing="false" onAction="#onPopulateData" prefHeight="25.0" prefWidth="145.0" text="Populate Data" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                             </GridPane>
-                         </VBox>
-                         <VBox prefHeight="98.0" prefWidth="739.0">
-                             <GridPane maxWidth="739.0">
-                                 <columnConstraints>
-                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
-                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
-                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                     <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <Label fx:id="progressTxt" GridPane.rowIndex="1" />
-                                 <Button fx:id="runProcess" mnemonicParsing="false" onAction="#onRunProcess" prefHeight="25.0" prefWidth="140.0" text="Run Process" GridPane.columnIndex="2">
-                                     <tooltip>
-                                         <Tooltip text="This will spawn Apache Tika and extract the meta data" />
-                                     </tooltip>
-                                 </Button>
-                                 <Button fx:id="stopProcess" mnemonicParsing="false" onAction="#killThread" prefHeight="25.0" prefWidth="131.0" text="Stop Process" GridPane.columnIndex="1" />
-                              <CheckBox fx:id="dataDeleteChkBox" mnemonicParsing="false" text="Delete Data before Proccessing" />
-                             </GridPane>
-                         </VBox>
-                         <VBox prefHeight="155.0" prefWidth="719.0">
-                             <ProgressBar fx:id="bar" prefHeight="23.0" prefWidth="719.0" progress="0.0" />
-                         </VBox>
-                     </children>
-                     <padding>
-                         <Insets bottom="10.0" left="10.0" right="30.0" top="10.0" />
-                     </padding>
-                 </VBox>
-             </AnchorPane>
-         </content>
-       </Tab>
-       <Tab text="Keys Analysis">
-         <content>
-           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                   <VBox prefHeight="1032.0" prefWidth="1900.0">
-                       <children>
-                           <HBox prefHeight="1061.0" prefWidth="1507.0">
-                               <children>
-                                   <TableView fx:id="keysCountTableView" prefHeight="1032.0" prefWidth="555.0">
-                                       <columns>
-                                           <TableColumn fx:id="metaKeyCol" prefWidth="264.0" text="MetaDataKey" />
-                                           <TableColumn fx:id="countCol" prefWidth="85.0" text="Count" />
-                                       </columns>
-                                   </TableView>
-                                 <HBox prefHeight="1032.0" prefWidth="1043.0">
-                                    <children>
-                                       <TableView fx:id="keysValueDrillTableView" prefHeight="1032.0" prefWidth="1034.0">
-                                         <columns>
-                                           <TableColumn fx:id="KeyDrillCol" prefWidth="389.0" text="MetaDataKey" />
-                                           <TableColumn fx:id="valuesDrillCol" minWidth="0.0" prefWidth="637.0" text="Values" />
-                                         </columns>
-                                       </TableView>
-                                    </children>
-                                 </HBox>
-                               </children>
-                           </HBox>
-                       </children>
-                   </VBox>
-               </children>
-           </AnchorPane>
-         </content>
-       </Tab>
-         <Tab text="Duplicates">
-           <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                  <children>
-                     <TableView fx:id="dupesTableView" prefHeight="968.0" prefWidth="579.0">
-                       <columns>
-                         <TableColumn fx:id="dupesValueCol" prefWidth="432.0" text="Value" />
-                         <TableColumn fx:id="dupesCountCol" prefWidth="143.0" text="Count" />
-                       </columns>
-                     </TableView>
-                     <TableView fx:id="dupesDrillTableView" layoutX="588.0" prefHeight="969.0" prefWidth="466.0">
-                       <columns>
-                         <TableColumn fx:id="dupesFileNameCol" prefWidth="150.0" text="File Name" />
-                       </columns>
-                     </TableView>
-                  </children>
-               </AnchorPane>
-           </content>
-         </Tab>
-         <Tab text="Untitled Tab">
-            <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="529.0" prefWidth="200.0">
-                  <children>
-                       <HBox prefHeight="1032.0" prefWidth="1042.0">
-                           <children>
-                               <PieChart fx:id="keysPieChart" prefHeight="1013.0" prefWidth="1108.0" />
-                           </children>
-                       </HBox>
-                  </children>
-               </AnchorPane>
-            </content>
-         </Tab>
-     </tabs>
-   </TabPane>
+    <TabPane prefHeight="1202.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <Tab text="Main Page">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <VBox prefHeight="1173.0" prefWidth="766.0">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="30.0" top="10.0"/>
+                    </padding>
+                    <VBox prefHeight="70.0" prefWidth="799.0">
+                        <VBox alignment="TOP_RIGHT" prefHeight="39.0" prefWidth="496.0">
+                            <GridPane prefHeight="65.0" prefWidth="500.0">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="373.0" minWidth="10.0"
+                                                       prefWidth="318.0"/>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0"
+                                                       prefWidth="300.0"/>
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                </rowConstraints>
+                                <Button contentDisplay="RIGHT" onAction="#onInSelectedFolderButtonClick"
+                                        prefHeight="25.0" prefWidth="134.0" text="Select Folder"
+                                        GridPane.columnIndex="1"/>
+                                <Label prefHeight="17.0" prefWidth="277.0" text="Select Input Folder"/>
+                                <Label fx:id="inSelectedFolder" text="G:\SampleFiles" GridPane.rowIndex="1"/>
+                            </GridPane>
+                        </VBox>
+                    </VBox>
+                    <VBox prefHeight="70.0" prefWidth="739.0">
+                        <GridPane maxWidth="739.0" prefHeight="40.0" prefWidth="732.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="373.0" minWidth="10.0"
+                                                   prefWidth="316.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="371.0" minWidth="10.0"
+                                                   prefWidth="302.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="28.0" minHeight="10.0" prefHeight="23.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="42.0"
+                                                vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <Button contentDisplay="RIGHT" onAction="#onOutSelectedFolderButtonClick"
+                                    prefHeight="25.0" prefWidth="134.0" text="Select Folder"
+                                    GridPane.columnIndex="1"/>
+                            <Label prefHeight="17.0" prefWidth="339.0" text="Select Output Folder"/>
+                            <Label fx:id="outSelectedFolder" text="G:\temp" GridPane.rowIndex="1"/>
+                        </GridPane>
+                    </VBox>
+                    <VBox prefHeight="300.0" prefWidth="739.0">
+                        <GridPane maxWidth="739.0" prefHeight="285.0" prefWidth="739.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="379.0" minWidth="10.0"
+                                                   prefWidth="372.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0"
+                                                   prefWidth="367.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="47.0" minHeight="10.0" prefHeight="37.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="45.0" minHeight="10.0" prefHeight="37.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="35.0" minHeight="10.0" prefHeight="31.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="31.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="26.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="30.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="30.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="30.0"
+                                                vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <Label prefHeight="17.0" prefWidth="162.0" text="Database Connection"/>
+                            <Label prefHeight="17.0" prefWidth="113.0" text="Database" GridPane.rowIndex="1"/>
+                            <Label prefHeight="17.0" prefWidth="121.0" text="JDBC URL" GridPane.rowIndex="2"/>
+                            <ComboBox fx:id="dbDropDown" onAction="#onChangeDbDropDown" prefHeight="25.0"
+                                      prefWidth="366.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <Label text="User Id" GridPane.rowIndex="3"/>
+                            <Label text="Password" GridPane.rowIndex="4"/>
+                            <TextField fx:id="jdbcUrl" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            <TextField fx:id="userId" text="postgres" GridPane.columnIndex="1"
+                                       GridPane.rowIndex="3"/>
+                            <PasswordField fx:id="password" prefHeight="25.0" prefWidth="253.0" text="1"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                            <Button fx:id="testConnection" mnemonicParsing="false" onAction="#onTestConnection"
+                                    prefHeight="25.0" prefWidth="140.0" text="Test Connection"
+                                    GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5"/>
+                            <Label fx:id="connectionTest" GridPane.halignment="LEFT" GridPane.rowIndex="5"
+                                   GridPane.rowSpan="2147483647" GridPane.valignment="TOP"/>
+                            <Button mnemonicParsing="false" onAction="#onPopulateData" prefHeight="25.0"
+                                    prefWidth="145.0" text="Populate Data" GridPane.columnIndex="1"
+                                    GridPane.rowIndex="5"/>
+                        </GridPane>
+                    </VBox>
+                    <VBox prefHeight="98.0" prefWidth="739.0">
+                        <GridPane maxWidth="739.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="30.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="31.0" minHeight="10.0" prefHeight="30.0"
+                                                vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <Label fx:id="progressTxt" GridPane.rowIndex="1"/>
+                            <Button fx:id="runProcess" mnemonicParsing="false" onAction="#onRunProcess"
+                                    prefHeight="25.0" prefWidth="140.0" text="Run Process"
+                                    GridPane.columnIndex="2">
+                                <tooltip>
+                                    <Tooltip text="This will spawn Apache Tika and extract the meta data"/>
+                                </tooltip>
+                            </Button>
+                            <Button fx:id="stopProcess" mnemonicParsing="false" onAction="#killThread"
+                                    prefHeight="25.0" prefWidth="131.0" text="Stop Process"
+                                    GridPane.columnIndex="1"/>
+                            <CheckBox fx:id="dataDeleteChkBox" mnemonicParsing="false"
+                                      text="Delete Data before Proccessing"/>
+                        </GridPane>
+                    </VBox>
+                    <VBox prefHeight="155.0" prefWidth="719.0">
+                        <ProgressBar fx:id="bar" prefHeight="23.0" prefWidth="719.0" progress="0.0"/>
+                    </VBox>
+                </VBox>
+            </AnchorPane>
+        </Tab>
+        <Tab text="Keys Analysis">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <VBox prefHeight="1032.0" prefWidth="1900.0">
+                    <HBox prefHeight="1061.0" prefWidth="1507.0">
+                        <TableView fx:id="keysCountTableView" prefHeight="1032.0" prefWidth="555.0">
+                            <columns>
+                                <TableColumn fx:id="metaKeyCol" prefWidth="264.0" text="MetaDataKey"/>
+                                <TableColumn fx:id="countCol" prefWidth="85.0" text="Count"/>
+                            </columns>
+                        </TableView>
+                        <HBox prefHeight="1032.0" prefWidth="1043.0">
+                            <TableView fx:id="keysValueDrillTableView" prefHeight="1032.0"
+                                       prefWidth="1034.0">
+                                <columns>
+                                    <TableColumn fx:id="KeyDrillCol" prefWidth="389.0"
+                                                 text="MetaDataKey"/>
+                                    <TableColumn fx:id="valuesDrillCol" minWidth="0.0"
+                                                 prefWidth="637.0" text="Values"/>
+                                </columns>
+                            </TableView>
+                        </HBox>
+                    </HBox>
+                </VBox>
+            </AnchorPane>
+        </Tab>
+        <Tab text="Duplicates">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <TableView fx:id="dupesTableView" prefHeight="968.0" prefWidth="579.0">
+                    <columns>
+                        <TableColumn fx:id="dupesValueCol" prefWidth="432.0" text="Value"/>
+                        <TableColumn fx:id="dupesCountCol" prefWidth="143.0" text="Count"/>
+                    </columns>
+                </TableView>
+                <TableView fx:id="dupesDrillTableView" layoutX="588.0" prefHeight="969.0" prefWidth="466.0">
+                    <columns>
+                        <TableColumn fx:id="dupesFileNameCol" prefWidth="150.0" text="File Name"/>
+                    </columns>
+                </TableView>
+            </AnchorPane>
+        </Tab>
+        <Tab text="Untitled Tab">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="529.0" prefWidth="200.0">
+                <HBox prefHeight="1032.0" prefWidth="1042.0">
+                    <PieChart fx:id="keysPieChart" prefHeight="1013.0" prefWidth="1108.0"/>
+                </HBox>
+            </AnchorPane>
+        </Tab>
+    </TabPane>
 </VBox>

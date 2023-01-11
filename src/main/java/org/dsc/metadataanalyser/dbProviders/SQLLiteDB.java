@@ -6,6 +6,7 @@ public class SQLLiteDB {
     private static final String SQL_INSERT = "INSERT INTO MetaData(\"FileName\", \"MetaDataKey\", \"Value\")VALUES (?, ?, ?)";
     private static final String KeyAnalysis ="select cast(value as Integer) as value,text from (SELECT count(MetaDataKey) as value,MetaDataKey as text FROM MetaData group by MetaDataKey)order by value desc limit 100";
     private static final String DuplicatesStatement = "select * from (SELECT count(Value) as \"count\", Value from MetaData where MetaDataKey = 'X-TIKA:digest:SHA256' GROUP by Value) where count > 1 order by \"count\" desc";
+    private static final String DuplicatesDrillStatement = "SELECT fileName as \"fileName\" FROM MetaData WHERE Value = ?";
     public void runKeyAnalysisStatement(Connection con, String file, String metaDataKey, String value) throws SQLException {
         PreparedStatement st = con.prepareStatement(SQL_INSERT);
         st.setString(1, file);
@@ -25,4 +26,10 @@ public class SQLLiteDB {
         Statement  st = con.createStatement();
         return st.executeQuery(DuplicatesStatement);
     }
+    public ResultSet runDuplicatesDrillStatement(Connection con, String metaDataKey) throws SQLException {
+        PreparedStatement st = con.prepareStatement(DuplicatesDrillStatement);
+        st.setString(1, metaDataKey);
+        return st.executeQuery();
+    }
+
 }

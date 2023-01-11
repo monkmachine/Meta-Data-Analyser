@@ -9,11 +9,13 @@ public class MetaData extends Node {
     public SimpleIntegerProperty count = new SimpleIntegerProperty();
     public  SimpleStringProperty metaDataKey = new SimpleStringProperty();
     public  SimpleStringProperty value = new SimpleStringProperty();
+    public  SimpleStringProperty fileName = new SimpleStringProperty();
 
-    public MetaData(int count, String metaDataKey, String value) {
+    public MetaData(int count, String metaDataKey, String value, String fileName) {
         this.count.set(count);
         this.metaDataKey.set(metaDataKey);
         this.value.set(value);
+        this.fileName.set(fileName);
     }
 
     public void setCount(int count) {
@@ -29,6 +31,7 @@ public class MetaData extends Node {
     public String getMetaDataKey() {
         return metaDataKey.get();
     }
+    public String getFileName() { return fileName.get(); }
 
     public void setMetaDataKey(String metaDataKey) {
         this.metaDataKey.set(metaDataKey);

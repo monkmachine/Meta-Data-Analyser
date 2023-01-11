@@ -47,9 +47,12 @@ public class MetaDataAnalyserController implements Initializable {
     ComboBox<String> dbDropDown;
     @FXML
     private ProgressBar bar;
-    private Thread metaScrapeThread;
+    @FXML
+    private TableView<MetaData> duplicatesDrilldown = new TableView<>();
     @FXML
     private TableView<MetaData> tableView = new TableView<>();
+    @FXML
+    private TableView<MetaData> duplicatesTableView = new TableView<>();
     @FXML
     private TableColumn<MetaData, Number> count = new TableColumn<>("count");
     @FXML
@@ -58,15 +61,16 @@ public class MetaDataAnalyserController implements Initializable {
     private TableColumn<MetaData, Number> duplicatesCount = new TableColumn<>("count");
     @FXML
     private TableColumn<MetaData, String> duplicatesValue = new TableColumn<>("Value");
-
     @FXML
-    private TableView<MetaData> duplicatesTableView = new TableView<>();
+    private TableColumn<MetaData, String> duplicatesFileName = new TableColumn<>("fileName");
     @FXML
     private PieChart pie;
     @FXML
     ResultSet rs;
+    private Thread metaScrapeThread;
     private final ObservableList<MetaData> data = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesData = FXCollections.observableArrayList();
+    private final ObservableList<MetaData> duplicatesFileNamesdata = FXCollections.observableArrayList();
     private final ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
     private final DBConnection dbCon = new DBConnection();
     private final FolderChooser fc = new FolderChooser();
@@ -162,6 +166,7 @@ public class MetaDataAnalyserController implements Initializable {
         }
         setDuplicatesTableView();
 
+
     }
 
     private void setMetaTableView() {
@@ -174,7 +179,7 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                data.add(new MetaData(rs.getInt("value"), rs.getString("text"), ""));
+                data.add(new MetaData(rs.getInt("value"), rs.getString("text"), "",""));
 
             }
             tableView.setItems(data);
@@ -197,19 +202,53 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), ""));
+                duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), "",""));
 
             }
             duplicatesTableView.setItems(duplicatesData);
             duplicatesTableView.setOnMouseClicked((MouseEvent event) -> {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
-                    System.out.println(duplicatesTableView.getSelectionModel().getSelectedItem());
-                    System.out.println(duplicatesTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    if(duplicatesTableView.getSelectionModel().getSelectedItem().getMetaDataKey()!=null){
+                        duplicatesDrilldownTableView(duplicatesTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    }
                 }
             });
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+    }
+    private void duplicatesDrilldownTableView(String metaDataKey) {
+        duplicatesFileNamesdata.clear();
+        try {
+            rs = dbCon.runDuplicatesDrillStatement(metaDataKey);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        duplicatesFileName.setCellValueFactory(cellData -> cellData.getValue().fileName);
+        try {
+            while (true) {
+                try {
+                    if (!rs.next()) break;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                duplicatesFileNamesdata.add(new MetaData(0, "", "",rs.getString("fileName")));
+
+            }
+            duplicatesDrilldown.setItems(duplicatesFileNamesdata);
+            duplicatesDrilldown.setOnMouseClicked((MouseEvent event) -> {
+                if(event.getButton().equals(MouseButton.PRIMARY)){
+                    if(duplicatesDrilldown.getSelectionModel().getSelectedItem() !=null){
+                        System.out.println(duplicatesDrilldown.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    }
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        duplicatesDrilldown.setVisible(true);
+
 
     }
     protected void setSelectedFolder(String inOutFolder) {

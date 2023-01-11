@@ -90,6 +90,15 @@ public class DBConnection {
             throw new SQLException("");
         }
     }
+    public ResultSet runDuplicatesDrillStatement(String metaDataKey) throws SQLException {
+        if (this.dBType.equals("Postgres")) {
+            return pg.runStatement(con);
+        } else if (this.dBType.equals("SQLite")) {
+            return sqlLiteDB.runDuplicatesDrillStatement(con,metaDataKey);
+        } else {
+            throw new SQLException("");
+        }
+    }
 
     public void commit() throws SQLException {
         con.commit();

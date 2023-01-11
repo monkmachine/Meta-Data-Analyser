@@ -99,6 +99,15 @@ public class DBConnection {
             throw new SQLException("");
         }
     }
+    public ResultSet runKeysDrilldownStatement(String metaDataKey) throws SQLException {
+        if (this.dBType.equals("Postgres")) {
+            return pg.runStatement(con);
+        } else if (this.dBType.equals("SQLite")) {
+            return sqlLiteDB.runKeysDrilldownStatement(con,metaDataKey);
+        } else {
+            throw new SQLException("");
+        }
+    }
 
     public void commit() throws SQLException {
         con.commit();

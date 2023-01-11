@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" prefHeight="1202.0" prefWidth="1599.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dsc.metadataanalyser.MetaDataAnalyserController">
-   <TabPane prefHeight="1202.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE">
+   <TabPane prefHeight="1202.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
      <tabs>
        <Tab text="Main Page">
          <content>

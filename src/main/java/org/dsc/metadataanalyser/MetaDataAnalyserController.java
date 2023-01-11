@@ -79,7 +79,6 @@ public class MetaDataAnalyserController implements Initializable {
     private final ObservableList<MetaData> data = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesData = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesFileNamesdata = FXCollections.observableArrayList();
-    private final ObservableList<MetaData> metaDataKeyDetail = FXCollections.observableArrayList();
     private final ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
     private final DBConnection dbCon = new DBConnection();
     private final FolderChooser fc = new FolderChooser();

@@ -54,25 +54,25 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     private TableView<MetaData> keysCountTableView = new TableView<>();
     @FXML
-    private TableView<MetaData> duplicatesTableView = new TableView<>();
+    private TableView<MetaData> dupesTableView = new TableView<>();
     @FXML
-    private TableView<MetaData> metaDataKeyValues = new TableView<>();
+    private TableView<MetaData> keysValueDrillTableView = new TableView<>();
     @FXML
-    private TableColumn<MetaData, String> valuesDrillDown = new TableColumn<>("Value");
+    private TableColumn<MetaData, String> valuesDrillCol = new TableColumn<>("Value");
     @FXML
-    private TableColumn<MetaData, String> metaDataKeyDrill = new TableColumn<>("MetaDataKey");
+    private TableColumn<MetaData, String> KeyDrillCol = new TableColumn<>("MetaDataKey");
     @FXML
-    private TableColumn<MetaData, Number> count = new TableColumn<>("count");
+    private TableColumn<MetaData, Number> countCol = new TableColumn<>("count");
     @FXML
-    private TableColumn<MetaData, String> metaDataKey = new TableColumn<>("Value");
+    private TableColumn<MetaData, String> metaKeyCol = new TableColumn<>("Value");
     @FXML
-    private TableColumn<MetaData, Number> duplicatesCount = new TableColumn<>("count");
+    private TableColumn<MetaData, Number> dupesCountCol = new TableColumn<>("count");
     @FXML
-    private TableColumn<MetaData, String> duplicatesValue = new TableColumn<>("Value");
+    private TableColumn<MetaData, String> dupesValueCol = new TableColumn<>("Value");
     @FXML
-    private TableColumn<MetaData, String> duplicatesFileName = new TableColumn<>("fileName");
+    private TableColumn<MetaData, String> dupesFileNameCol = new TableColumn<>("FileName");
     @FXML
-    private PieChart pie;
+    private PieChart keysPieChart;
     @FXML
     ResultSet rs;
     private Thread metaScrapeThread;
@@ -108,12 +108,12 @@ public class MetaDataAnalyserController implements Initializable {
 
     @FXML
     public void onTestConnection() {
-        jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
         setConnectionTestLabel();
     }
 
     @FXML
-    public void onPopulateData() {
+    public void onPopulateData() throws SQLException {
         populateData();
     }
 
@@ -123,10 +123,10 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     public void killThread() {
-        if(metaScrapeThread != null){
-        metaScrapeThread.interrupt();
-        bar.progressProperty().unbind();
-        bar.progressProperty().set(0);
+        if (metaScrapeThread != null) {
+            metaScrapeThread.interrupt();
+            bar.progressProperty().unbind();
+            bar.progressProperty().set(0);
             try {
                 dbCon.close();
             } catch (SQLException e) {
@@ -136,107 +136,63 @@ public class MetaDataAnalyserController implements Initializable {
         }
     }
 
-    public void populateData() {
-        data.clear();
-        jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+    public void populateData() throws SQLException {
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
         dbCon.setJdbcDetails(jdbcDetails);
         onTestConnection();
-        try {
-            rs = dbCon.runKeyAnalysisStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        setMetaTableView();
-        MetaPieChart mpc = new MetaPieChart();
-        try {
-            rs.beforeFirst();
-        } catch (SQLException e) {
-            try {
-                rs = dbCon.runKeyAnalysisStatement();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-        try {
-            pie = mpc.setUpPieChart(rs, pie, pieData);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            rs = dbCon.runKeyAnalysisStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            rs = dbCon.runDuplicatesStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        setDuplicatesTableView();
-
-
+        setKeysCountTableView();
+        setKeysPieChart();
+        setDupesTableView();
     }
 
-    private void setMetaTableView() {
-        count.setCellValueFactory(cellData -> cellData.getValue().getCountProperty());
-        metaDataKey.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
-        try {
-            while (true) {
-                try {
-                    if (!rs.next()) break;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                data.add(new MetaData(rs.getInt("value"), rs.getString("text"), "","","","",""));
-
-            }
-            keysCountTableView.setItems(data);
-            keysCountTableView.setOnMouseClicked((MouseEvent event) -> {
-                if(event.getButton().equals(MouseButton.PRIMARY)){
-                    if(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey()!=null){
-                        keysDrilldownTableView(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+    private void setKeysCountTableView() throws SQLException {
+        data.clear();
+        rs = dbCon.runKeyAnalysisStatement();
+        countCol.setCellValueFactory(cellData -> cellData.getValue().getCountProperty());
+        metaKeyCol.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
+        while (rs.next()) {
+            data.add(new MetaData(rs.getInt("value"), rs.getString("text"), "", "", "", "", ""));
+        }
+        keysCountTableView.setItems(data);
+        keysCountTableView.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                if (keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey() != null) {
+                    try {
+                        setKeysValueDrillTableView(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
                 }
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private void setDuplicatesTableView() {
-        duplicatesCount.setCellValueFactory(cellData -> cellData.getValue().getCountProperty());
-        duplicatesValue.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
-        try {
-            while (true) {
-                try {
-                    if (!rs.next()) break;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), "","","","",""));
-
             }
-            duplicatesTableView.setItems(duplicatesData);
-            duplicatesTableView.setOnMouseClicked((MouseEvent event) -> {
-                if(event.getButton().equals(MouseButton.PRIMARY)){
-                    if(duplicatesTableView.getSelectionModel().getSelectedItem().getMetaDataKey()!=null){
-                        duplicatesDrilldownTableView(duplicatesTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
-                    }
-                }
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        });
     }
-    private void duplicatesDrilldownTableView(String metaDataKey) {
+
+    private void setDupesTableView() throws SQLException {
+        duplicatesData.clear();
+        rs = dbCon.runDuplicatesStatement();
+        dupesCountCol.setCellValueFactory(cellData -> cellData.getValue().getCountProperty());
+        dupesValueCol.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
+        while (rs.next()) {
+            duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), "", "", "", "", ""));
+        }
+        dupesTableView.setItems(duplicatesData);
+        dupesTableView.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                if (dupesTableView.getSelectionModel().getSelectedItem().getMetaDataKey() != null) {
+                    setDupesDrillTableView(dupesTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                }
+            }
+        });
+    }
+
+    private void setDupesDrillTableView(String metaDataKey) {
         duplicatesFileNamesdata.clear();
         try {
             rs = dbCon.runDuplicatesDrillStatement(metaDataKey);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        duplicatesFileName.setCellValueFactory(cellData -> cellData.getValue().fileName);
+        dupesFileNameCol.setCellValueFactory(cellData -> cellData.getValue().fileName);
         try {
             while (true) {
                 try {
@@ -244,59 +200,39 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                duplicatesFileNamesdata.add(new MetaData(0, "", "",rs.getString("fileName"),"","",""));
-
+                duplicatesFileNamesdata.add(new MetaData(0, "", "", rs.getString("FileName"), "", "", ""));
             }
             dupesDrillTableView.setItems(duplicatesFileNamesdata);
-            dupesDrillTableView.setOnMouseClicked((MouseEvent event) -> {
-                if(event.getButton().equals(MouseButton.PRIMARY)){
-                    if(dupesDrillTableView.getSelectionModel().getSelectedItem() !=null){
-                        System.out.println(dupesDrillTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
-                    }
-                }
-            });
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         dupesDrillTableView.setVisible(true);
-
-
     }
 
-    private void keysDrilldownTableView(String metaDataKey) {
+    private void setKeysValueDrillTableView(String metaDataKey) throws SQLException {
         duplicatesFileNamesdata.clear();
         try {
             rs = dbCon.runKeysDrilldownStatement(metaDataKey);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        valuesDrillDown.setCellValueFactory(cellData -> cellData.getValue().value);
-        metaDataKeyDrill.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
-        try {
-            while (true) {
-                try {
-                    if (!rs.next()) break;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"),"","","",""));
-
-            }
-
-            metaDataKeyValues.setItems(duplicatesFileNamesdata);
-            metaDataKeyValues.setOnMouseClicked((MouseEvent event) -> {
-                if(event.getButton().equals(MouseButton.PRIMARY)){
-                    if(metaDataKeyValues.getSelectionModel().getSelectedItem() !=null){
-                        System.out.println(metaDataKeyValues.getSelectionModel().getSelectedItem().getMetaDataKey());
-                    }
-                }
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        valuesDrillCol.setCellValueFactory(cellData -> cellData.getValue().value);
+        KeyDrillCol.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
+        while (rs.next()) {
+            duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"), "", "", "", ""));
         }
-        metaDataKeyValues.setVisible(true);
+        keysValueDrillTableView.setItems(duplicatesFileNamesdata);
+        keysValueDrillTableView.setVisible(true);
+    }
 
-
+    private void setKeysPieChart() throws SQLException {
+        MetaPieChart mpc = new MetaPieChart();
+        try {
+            rs.beforeFirst();
+        } catch (SQLException e) {
+            rs = dbCon.runKeyAnalysisStatement();
+        }
+        keysPieChart = mpc.setUpPieChart(rs, keysPieChart, pieData);
     }
     protected void setSelectedFolder(String inOutFolder) {
         File file = fc.directoryChooser();
@@ -318,7 +254,7 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     protected void setConnectionTestLabel() {
-        jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
         dbCon.setJdbcDetails(jdbcDetails);
         try {
             dbCon.setDBConnection();
@@ -347,19 +283,18 @@ public class MetaDataAnalyserController implements Initializable {
         TikaProcessor tp = new TikaProcessor();
 
 
-
         protected Void call() throws Exception {
 
             tp.setFile(inSelectedFolder.getText());
             File[] pathNames = tp.getFileListToProcess();
-            jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
+            jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
             dbCon.setJdbcDetails(jdbcDetails);
             try {
                 dbCon.setDBConnection();
             } catch (SQLException e) {
                 progressTxt.setText(e.getMessage());
             }
-            if(dataDeleteChkBox.isSelected()){
+            if (dataDeleteChkBox.isSelected()) {
                 try {
                     dbCon.clearOutDatabase();
                 } catch (SQLException e) {

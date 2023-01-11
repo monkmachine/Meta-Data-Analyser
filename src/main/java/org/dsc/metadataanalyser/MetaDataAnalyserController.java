@@ -188,7 +188,7 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                data.add(new MetaData(rs.getInt("value"), rs.getString("text"), "",""));
+                data.add(new MetaData(rs.getInt("value"), rs.getString("text"), "","","","",""));
 
             }
             tableView.setItems(data);
@@ -213,7 +213,7 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), "",""));
+                duplicatesData.add(new MetaData(rs.getInt("count"), rs.getString("value"), "","","","",""));
 
             }
             duplicatesTableView.setItems(duplicatesData);
@@ -244,7 +244,7 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                duplicatesFileNamesdata.add(new MetaData(0, "", "",rs.getString("fileName")));
+                duplicatesFileNamesdata.add(new MetaData(0, "", "",rs.getString("fileName"),"","",""));
 
             }
             duplicatesDrilldown.setItems(duplicatesFileNamesdata);
@@ -279,7 +279,7 @@ public class MetaDataAnalyserController implements Initializable {
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"),""));
+                duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"),"","","",""));
 
             }
 

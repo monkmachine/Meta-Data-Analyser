@@ -1,6 +1,7 @@
 package org.dsc.metadataanalyser.utilties;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -11,8 +12,9 @@ public class TikaProcessor {
     private String file;
 
     public File[] getFileListToProcess() {
+        FileFilter directoryFilter = file -> !file.isDirectory();
         File f = new File(this.file);
-        return f.listFiles();
+        return f.listFiles(directoryFilter);
 
     }
 
@@ -23,9 +25,7 @@ public class TikaProcessor {
 
         try {
             resp = tr.makeTikaRequest();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         JsonReader jsonRead;

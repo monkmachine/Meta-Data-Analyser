@@ -24,6 +24,7 @@ public class MetaDataAnalyser extends Application {
         URI tikaConfigURI = Objects.requireNonNull(MetaDataAnalyserController.class.getResource("tika-server-config-default.xml")).toURI();
         File tikaConfigFile = new File(tikaConfigURI.getPath());
         String [] command = {"java","-jar",tikaJarFile.getAbsolutePath(),"-c",tikaConfigFile.getAbsolutePath()};
+        tc.setDirectory(tikaConfigFile.getParent());
 
         tc.setCmd(command);
         tc.run();

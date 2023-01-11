@@ -19,7 +19,7 @@
 			<javaPath>java</javaPath>
 			<forkedJvmArgs>
 				<arg>-Xmx4g</arg>
-				<arg>-Dlog4j.configurationFile=log4j_server.xml</arg>
+				<arg>-Dlog4j.configurationFile=.\log4j_server.xml</arg>
 			</forkedJvmArgs>
 		</params>
 	</server>

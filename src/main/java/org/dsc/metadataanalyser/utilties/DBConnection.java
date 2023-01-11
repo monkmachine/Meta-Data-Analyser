@@ -119,4 +119,14 @@ public class DBConnection {
         }
 
     }
+
+    public void clearOutDatabase() throws SQLException {
+        if (this.dBType.equals("Postgres")) {
+            pg.runStatement(con);
+        } else if (this.dBType.equals("SQLite")) {
+            sqlLiteDB.clearOutDatabase(con);
+        } else {
+            throw new SQLException("");
+        }
+    }
 }

@@ -134,16 +134,16 @@
                                <children>
                                    <TableView fx:id="keysCountTableView" prefHeight="1032.0" prefWidth="555.0">
                                        <columns>
-                                           <TableColumn fx:id="metaDataKey" prefWidth="264.0" text="MetaDataKey" />
-                                           <TableColumn fx:id="count" prefWidth="85.0" text="Count" />
+                                           <TableColumn fx:id="metaKeyCol" prefWidth="264.0" text="MetaDataKey" />
+                                           <TableColumn fx:id="countCol" prefWidth="85.0" text="Count" />
                                        </columns>
                                    </TableView>
                                  <HBox prefHeight="1032.0" prefWidth="1043.0">
                                     <children>
-                                       <TableView fx:id="metaDataKeyValues" prefHeight="1032.0" prefWidth="1034.0">
+                                       <TableView fx:id="keysValueDrillTableView" prefHeight="1032.0" prefWidth="1034.0">
                                          <columns>
-                                           <TableColumn fx:id="metaDataKeyDrill" prefWidth="389.0" text="MetaDataKey" />
-                                           <TableColumn fx:id="valuesDrillDown" minWidth="0.0" prefWidth="637.0" text="Values" />
+                                           <TableColumn fx:id="KeyDrillCol" prefWidth="389.0" text="MetaDataKey" />
+                                           <TableColumn fx:id="valuesDrillCol" minWidth="0.0" prefWidth="637.0" text="Values" />
                                          </columns>
                                        </TableView>
                                     </children>
@@ -160,15 +160,15 @@
            <content>
              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                     <TableView fx:id="duplicatesTableView" prefHeight="968.0" prefWidth="579.0">
+                     <TableView fx:id="dupesTableView" prefHeight="968.0" prefWidth="579.0">
                        <columns>
-                         <TableColumn fx:id="duplicatesValue" prefWidth="432.0" text="Value" />
-                         <TableColumn fx:id="duplicatesCount" prefWidth="143.0" text="Count" />
+                         <TableColumn fx:id="dupesValueCol" prefWidth="432.0" text="Value" />
+                         <TableColumn fx:id="dupesCountCol" prefWidth="143.0" text="Count" />
                        </columns>
                      </TableView>
                      <TableView fx:id="dupesDrillTableView" layoutX="588.0" prefHeight="969.0" prefWidth="466.0">
                        <columns>
-                         <TableColumn fx:id="duplicatesFileName" prefWidth="150.0" text="File Name" />
+                         <TableColumn fx:id="dupesFileNameCol" prefWidth="150.0" text="File Name" />
                        </columns>
                      </TableView>
                   </children>
@@ -181,7 +181,7 @@
                   <children>
                        <HBox prefHeight="1032.0" prefWidth="1042.0">
                            <children>
-                               <PieChart fx:id="pie" prefHeight="1013.0" prefWidth="1108.0" />
+                               <PieChart fx:id="keysPieChart" prefHeight="1013.0" prefWidth="1108.0" />
                            </children>
                        </HBox>
                   </children>

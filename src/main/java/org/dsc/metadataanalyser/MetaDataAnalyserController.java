@@ -54,6 +54,12 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     private TableView<MetaData> duplicatesTableView = new TableView<>();
     @FXML
+    private TableView<MetaData> metaDataKeyValues = new TableView<>();
+    @FXML
+    private TableColumn<MetaData, String> valuesDrillDown = new TableColumn<>("Value");
+    @FXML
+    private TableColumn<MetaData, String> metaDataKeyDrill = new TableColumn<>("MetaDataKey");
+    @FXML
     private TableColumn<MetaData, Number> count = new TableColumn<>("count");
     @FXML
     private TableColumn<MetaData, String> metaDataKey = new TableColumn<>("Value");
@@ -71,6 +77,7 @@ public class MetaDataAnalyserController implements Initializable {
     private final ObservableList<MetaData> data = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesData = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesFileNamesdata = FXCollections.observableArrayList();
+    private final ObservableList<MetaData> metaDataKeyDetail = FXCollections.observableArrayList();
     private final ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
     private final DBConnection dbCon = new DBConnection();
     private final FolderChooser fc = new FolderChooser();
@@ -185,7 +192,9 @@ public class MetaDataAnalyserController implements Initializable {
             tableView.setItems(data);
             tableView.setOnMouseClicked((MouseEvent event) -> {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
-                    System.out.println(tableView.getSelectionModel().getSelectedItem());
+                    if(tableView.getSelectionModel().getSelectedItem().getMetaDataKey()!=null){
+                        keysDrilldownTableView(tableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    }
                 }
             });
         } catch (SQLException e) {
@@ -248,6 +257,42 @@ public class MetaDataAnalyserController implements Initializable {
             throw new RuntimeException(e);
         }
         duplicatesDrilldown.setVisible(true);
+
+
+    }
+
+    private void keysDrilldownTableView(String metaDataKey) {
+        duplicatesFileNamesdata.clear();
+        try {
+            rs = dbCon.runKeysDrilldownStatement(metaDataKey);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        valuesDrillDown.setCellValueFactory(cellData -> cellData.getValue().value);
+        metaDataKeyDrill.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
+        try {
+            while (true) {
+                try {
+                    if (!rs.next()) break;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"),""));
+
+            }
+
+            metaDataKeyValues.setItems(duplicatesFileNamesdata);
+            metaDataKeyValues.setOnMouseClicked((MouseEvent event) -> {
+                if(event.getButton().equals(MouseButton.PRIMARY)){
+                    if(metaDataKeyValues.getSelectionModel().getSelectedItem() !=null){
+                        System.out.println(metaDataKeyValues.getSelectionModel().getSelectedItem().getMetaDataKey());
+                    }
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        metaDataKeyValues.setVisible(true);
 
 
     }

@@ -135,11 +135,16 @@
                                            <TableColumn fx:id="count" prefWidth="85.0" text="Count" />
                                        </columns>
                                    </TableView>
-                                   <HBox prefHeight="1032.0" prefWidth="1042.0">
-                                       <children>
-                                           <PieChart fx:id="pie" prefHeight="1013.0" prefWidth="1108.0" />
-                                       </children>
-                                   </HBox>
+                                 <HBox prefHeight="1032.0" prefWidth="1043.0">
+                                    <children>
+                                       <TableView fx:id="metaDataKeyValues" prefHeight="1032.0" prefWidth="1034.0">
+                                         <columns>
+                                           <TableColumn fx:id="metaDataKeyDrill" prefWidth="389.0" text="MetaDataKey" />
+                                           <TableColumn fx:id="valuesDrillDown" minWidth="0.0" prefWidth="637.0" text="Values" />
+                                         </columns>
+                                       </TableView>
+                                    </children>
+                                 </HBox>
                                </children>
                            </HBox>
                        </children>
@@ -166,6 +171,19 @@
                   </children>
                </AnchorPane>
            </content>
+         </Tab>
+         <Tab text="Untitled Tab">
+            <content>
+             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="529.0" prefWidth="200.0">
+                  <children>
+                       <HBox prefHeight="1032.0" prefWidth="1042.0">
+                           <children>
+                               <PieChart fx:id="pie" prefHeight="1013.0" prefWidth="1108.0" />
+                           </children>
+                       </HBox>
+                  </children>
+               </AnchorPane>
+            </content>
          </Tab>
      </tabs>
    </TabPane>

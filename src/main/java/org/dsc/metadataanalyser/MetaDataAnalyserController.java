@@ -233,6 +233,7 @@ public class MetaDataAnalyserController implements Initializable {
         }
         keysPieChart = mpc.setUpPieChart(rs, keysPieChart, pieData);
     }
+
     protected void setSelectedFolder(String inOutFolder) {
         File file = fc.directoryChooser();
         setFolderLabel(file, inOutFolder);

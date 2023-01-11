@@ -1,6 +1,8 @@
 package org.dsc.metadataanalyser.utilties;
 
+import java.io.File;
 import java.io.IOException;
+
 
 public class TikaController implements Runnable{
 
@@ -17,6 +19,12 @@ public class TikaController implements Runnable{
     }
 
     private String [] cmd;
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+
+    private String directory;
     private TikaController(){}
 
     public static synchronized TikaController getInstance() {
@@ -29,7 +37,9 @@ public class TikaController implements Runnable{
     @Override
     public void run() {
         try {
-            process = new ProcessBuilder(cmd).start();
+            ProcessBuilder pb =new ProcessBuilder(cmd);
+            pb.directory(new File(directory));
+            process = pb.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

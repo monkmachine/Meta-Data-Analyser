@@ -8,6 +8,7 @@ public class SQLLiteDB {
     private static final String DuplicatesStatement = "select * from (SELECT count(Value) as \"count\", Value from MetaData where MetaDataKey = 'X-TIKA:digest:SHA256' GROUP by Value) where count > 1 order by \"count\" desc";
     private static final String DuplicatesDrillStatement = "SELECT fileName as \"fileName\" FROM MetaData WHERE Value = ?";
     private static final String KeysDrillStatement = "SELECT DISTINCT (Value), MetaDataKey from MetaData where MetaDataKey = ?";
+    private static final String ClearDataBase = "delete from MetaData";
     public void runKeyAnalysisStatement(Connection con, String file, String metaDataKey, String value) throws SQLException {
         PreparedStatement st = con.prepareStatement(SQL_INSERT);
         st.setString(1, file);
@@ -37,5 +38,12 @@ public class SQLLiteDB {
         PreparedStatement st = con.prepareStatement(KeysDrillStatement);
         st.setString(1, metaDataKey);
         return st.executeQuery();
+    }
+    public void clearOutDatabase(Connection con) throws SQLException {
+        PreparedStatement st = con.prepareStatement(ClearDataBase);
+        con.setAutoCommit(true);
+        Statement stmt = con.createStatement();
+        st.executeUpdate();
+        stmt.close();
     }
 }

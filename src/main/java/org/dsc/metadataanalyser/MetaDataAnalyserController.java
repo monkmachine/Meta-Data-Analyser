@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
 
 public class MetaDataAnalyserController implements Initializable {
     @FXML
+    public CheckBox dataDeleteChkBox;
+    @FXML
     public PasswordField password;
     @FXML
     public TextField jdbcUrl;
@@ -337,6 +339,7 @@ public class MetaDataAnalyserController implements Initializable {
         metaScrapeThread.setDaemon(true);
         bar.progressProperty().bind(metaTask.progressProperty());
         metaScrapeThread.start();
+
     }
 
     //TODO this needs refactoring
@@ -344,7 +347,9 @@ public class MetaDataAnalyserController implements Initializable {
         TikaProcessor tp = new TikaProcessor();
 
 
+
         protected Void call() throws Exception {
+
             tp.setFile(inSelectedFolder.getText());
             File[] pathNames = tp.getFileListToProcess();
             jdbcDetails = new jdbcDetails(jdbcUrl.getText(),userId.getText(), password.getText(),dbDropDown.getSelectionModel().getSelectedItem());
@@ -353,6 +358,13 @@ public class MetaDataAnalyserController implements Initializable {
                 dbCon.setDBConnection();
             } catch (SQLException e) {
                 progressTxt.setText(e.getMessage());
+            }
+            if(dataDeleteChkBox.isSelected()){
+                try {
+                    dbCon.clearOutDatabase();
+                } catch (SQLException e) {
+                    progressTxt.setText(e.getMessage());
+                }
             }
             int i = 0;
             if (pathNames != null) {

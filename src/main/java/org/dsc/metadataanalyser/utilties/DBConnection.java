@@ -71,6 +71,14 @@ public class DBConnection {
         }
 
     }
+    public void runIngnoreKeyStatement(String metaDataKey) throws SQLException {
+        if (this.dBType.equals("Postgres")) {
+            pg.runStatement(con);
+        }
+        else if (this.dBType.equals("SQLite")) {
+             sqlLiteDB.runIgnoreKeyStatement(con, metaDataKey);
+        }
+    }
 
     public ResultSet runKeyAnalysisStatement() throws SQLException {
         if (this.dBType.equals("Postgres")) {

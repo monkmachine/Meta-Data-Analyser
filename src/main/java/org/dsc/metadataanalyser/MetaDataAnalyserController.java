@@ -333,11 +333,24 @@ public class MetaDataAnalyserController implements Initializable {
 @FXML
 protected void onAddToIgnoreBtn() {
     String msg = "Are you sure you want to add "+keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey()+ " to the ignore list?";
-    Dialog<ButtonType> dialog = new Dialog<>();
-    dialog.initStyle(StageStyle.UTILITY);
-    dialog.getDialogPane().getButtonTypes().add(new ButtonType("Yes", ButtonBar.ButtonData.YES));
-    dialog.getDialogPane().getButtonTypes().add(new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE));
-    dialog.setContentText(msg);
-    dialog.showAndWait();
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg);
+    alert.initStyle(StageStyle.UTILITY);
+    alert.setGraphic(null);
+    alert.setHeaderText(null);
+    alert.showAndWait().filter(response -> response == ButtonType.OK).ifPresent(response -> {
+        try {
+            Ingnore();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    });
 
-}}
+}
+protected void Ingnore() throws SQLException {
+        System.out.println(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+        dbCon.runIngnoreKeyStatement(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+        setKeysCountTableView();
+        keysValueDrillTableView.setItems(null);
+
+}
+}

@@ -4,28 +4,22 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 import org.dsc.metadataanalyser.components.MetaPieChart;
 import org.dsc.metadataanalyser.dataClasses.MetaData;
 import org.dsc.metadataanalyser.dataClasses.jdbcDetails;
 import org.dsc.metadataanalyser.utilties.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -334,6 +328,8 @@ public class MetaDataAnalyserController implements Initializable {
 protected void onAddToIgnoreBtn() {
     String msg = "Are you sure you want to add "+keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey()+ " to the ignore list?";
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, msg);
+    alert.initModality(Modality.APPLICATION_MODAL);
+    alert.initOwner(keysCountTableView.getScene().getWindow());
     alert.initStyle(StageStyle.UTILITY);
     alert.setGraphic(null);
     alert.setHeaderText(null);

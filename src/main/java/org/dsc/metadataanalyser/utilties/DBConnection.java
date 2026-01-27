@@ -1,6 +1,5 @@
 package org.dsc.metadataanalyser.utilties;
 
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.dsc.metadataanalyser.dataClasses.jdbcDetails;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 
 public class DBConnection {
     private String dBType;
-    private final String[] supportedDbs = {"Postgres", "SQL Server", "Oracle", "SQLite"};
+    private final String[] supportedDbs = { "Postgres", "SQL Server", "Oracle", "SQLite" };
     private String user;
     private String password;
     private final ObservableList<String> dbDropDownOptions = FXCollections.observableArrayList(supportedDbs);
@@ -27,24 +26,25 @@ public class DBConnection {
     private final PostgresDB pg = new PostgresDB();
     private final SQLLiteDB sqlLiteDB = new SQLLiteDB();
 
-    final Map<String, String> jDBCUrls = Stream.of(new String[][]{
-            {"Postgres", "jdbc:postgresql://localhost:5432/MetaData"},
-            {"SQL Server", "jdbc:sqlserver://host:port;databaseName=xxxx"},
-            {"Oracle", "jdbc:oracle:thin:@host:port:xxxx"},
-            {"SQLite", "jdbc:sqlite:sample.db"},
+    final Map<String, String> jDBCUrls = Stream.of(new String[][] {
+            { "Postgres", "" },
+            { "SQL Server", "" },
+            { "Oracle", "" },
+            { "SQLite", "jdbc:sqlite:sample.db" },
     }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
     public String jDBCUrlFormat(String db) {
         return jDBCUrls.get(db);
     }
 
-    public void setJdbcDetails(jdbcDetails jdbcDetails){
+    public void setJdbcDetails(jdbcDetails jdbcDetails) {
         this.jDBCUrl = jdbcDetails.getUrl();
         this.user = jdbcDetails.getUser();
         this.password = jdbcDetails.getPassword();
         this.dBType = jdbcDetails.getdBType();
 
     }
+
     public ObservableList<String> getDbDropDownOptions() {
         return dbDropDownOptions;
     }
@@ -59,7 +59,6 @@ public class DBConnection {
         }
         con = DriverManager.getConnection(jDBCUrl, user, password);
     }
-
 
     public void runStatement(String name, String key, String value) throws SQLException {
         if (Objects.equals(this.dBType, "Postgres")) {
@@ -81,29 +80,32 @@ public class DBConnection {
             throw new SQLException("");
         }
     }
+
     public ResultSet runDuplicatesStatement() throws SQLException {
         if (this.dBType.equals("Postgres")) {
-            return pg.runStatement(con);
+            return pg.runDuplicatesStatement(con);
         } else if (this.dBType.equals("SQLite")) {
             return sqlLiteDB.runDuplicatesStatement(con);
         } else {
             throw new SQLException("");
         }
     }
+
     public ResultSet runDuplicatesDrillStatement(String metaDataKey) throws SQLException {
         if (this.dBType.equals("Postgres")) {
-            return pg.runStatement(con);
+            return pg.runDuplicatesDrillStatement(con, metaDataKey);
         } else if (this.dBType.equals("SQLite")) {
-            return sqlLiteDB.runDuplicatesDrillStatement(con,metaDataKey);
+            return sqlLiteDB.runDuplicatesDrillStatement(con, metaDataKey);
         } else {
             throw new SQLException("");
         }
     }
+
     public ResultSet runKeysDrilldownStatement(String metaDataKey) throws SQLException {
         if (this.dBType.equals("Postgres")) {
-            return pg.runStatement(con);
+            return pg.runKeysDrilldownStatement(con, metaDataKey);
         } else if (this.dBType.equals("SQLite")) {
-            return sqlLiteDB.runKeysDrilldownStatement(con,metaDataKey);
+            return sqlLiteDB.runKeysDrilldownStatement(con, metaDataKey);
         } else {
             throw new SQLException("");
         }
@@ -122,7 +124,7 @@ public class DBConnection {
 
     public void clearOutDatabase() throws SQLException {
         if (this.dBType.equals("Postgres")) {
-            pg.runStatement(con);
+            pg.clearOutDatabase(con);
         } else if (this.dBType.equals("SQLite")) {
             sqlLiteDB.clearOutDatabase(con);
         } else {

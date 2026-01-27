@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class JsonReader {
 
     final JsonFactory jfactory = JsonFactory.builder()
@@ -30,31 +29,35 @@ public class JsonReader {
 
     public Map<String, String> processMetaFile(InputStream stream) throws IOException {
 
-            jParser = jfactory.createParser(stream);
+        jParser = jfactory.createParser(stream);
 
-            JsonToken nextToken;
-            jParser.nextToken();
-            while ((nextToken = jParser.nextToken()) != JsonToken.END_OBJECT && jParser.hasCurrentToken()) {
-                if (nextToken == JsonToken.FIELD_NAME) {
-                    String nextFieldName = jParser.currentName();
-                    nextToken = jParser.nextToken();
-                    if (nextToken.isStructStart()) {
-                        while (jParser.nextToken() != JsonToken.END_ARRAY) {
-                            //TODO This may be a bug here
-                            String val = jParser.getValueAsString();
-
+        JsonToken nextToken;
+        jParser.nextToken();
+        while ((nextToken = jParser.nextToken()) != JsonToken.END_OBJECT && jParser.hasCurrentToken()) {
+            if (nextToken == JsonToken.FIELD_NAME) {
+                String nextFieldName = jParser.currentName();
+                nextToken = jParser.nextToken();
+                if (nextToken.isStructStart()) {
+                    StringBuilder subVals = new StringBuilder();
+                    while (jParser.nextToken() != JsonToken.END_ARRAY) {
+                        String val = jParser.getValueAsString();
+                        if (val != null) {
+                            if (subVals.length() > 0) {
+                                subVals.append(", ");
+                            }
+                            subVals.append(val);
                         }
                     }
-                    if (jParser.getValueAsString() != null) {
-                        String val = jParser.getValueAsString();
-                        keyValPairs.put(nextFieldName, val);
-                    }
+                    keyValPairs.put(nextFieldName, subVals.toString());
+                } else if (jParser.getValueAsString() != null) {
+                    String val = jParser.getValueAsString();
+                    keyValPairs.put(nextFieldName, val);
                 }
-
             }
+
+        }
 
         return keyValPairs;
     }
-
 
 }

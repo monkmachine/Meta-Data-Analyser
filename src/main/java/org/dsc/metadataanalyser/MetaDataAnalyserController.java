@@ -76,6 +76,7 @@ public class MetaDataAnalyserController implements Initializable {
     @FXML
     ResultSet rs;
     private Thread metaScrapeThread;
+    private Task<Void> metaTask;
     private final ObservableList<MetaData> data = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesData = FXCollections.observableArrayList();
     private final ObservableList<MetaData> duplicatesFileNamesdata = FXCollections.observableArrayList();
@@ -107,7 +108,8 @@ public class MetaDataAnalyserController implements Initializable {
 
     @FXML
     public void onTestConnection() {
-        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(),
+                dbDropDown.getSelectionModel().getSelectedItem());
         setConnectionTestLabel();
     }
 
@@ -122,12 +124,13 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     public void killThread() {
-        if (metaScrapeThread != null) {
-            metaScrapeThread.interrupt();
+        if (metaTask != null && metaTask.isRunning()) {
+            metaTask.cancel(true);
             bar.progressProperty().unbind();
             bar.progressProperty().set(0);
             try {
-                dbCon.close();
+                if (dbCon != null)
+                    dbCon.close();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -136,7 +139,8 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     public void populateData() throws SQLException {
-        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(),
+                dbDropDown.getSelectionModel().getSelectedItem());
         dbCon.setJdbcDetails(jdbcDetails);
         onTestConnection();
         setKeysCountTableView();
@@ -157,7 +161,8 @@ public class MetaDataAnalyserController implements Initializable {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 if (keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey() != null) {
                     try {
-                        setKeysValueDrillTableView(keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
+                        setKeysValueDrillTableView(
+                                keysCountTableView.getSelectionModel().getSelectedItem().getMetaDataKey());
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -185,43 +190,75 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     private void setDupesDrillTableView(String metaDataKey) {
-        duplicatesFileNamesdata.clear();
-        try {
-            rs = dbCon.runDuplicatesDrillStatement(metaDataKey);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
         dupesFileNameCol.setCellValueFactory(cellData -> cellData.getValue().fileName);
-        try {
-            while (true) {
-                try {
-                    if (!rs.next()) break;
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                duplicatesFileNamesdata.add(new MetaData(0, "", "", rs.getString("FileName"), "", "", ""));
+        setupDrillDownTable(dupesDrillTableView, duplicatesFileNamesdata, dupesFileNameCol, () -> {
+            try {
+                return dbCon.runDuplicatesDrillStatement(metaDataKey);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            dupesDrillTableView.setItems(duplicatesFileNamesdata);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        dupesDrillTableView.setVisible(true);
+        }, "FileName");
     }
 
     private void setKeysValueDrillTableView(String metaDataKey) throws SQLException {
-        duplicatesFileNamesdata.clear();
+        valuesDrillCol.setCellValueFactory(cellData -> cellData.getValue().value);
+        KeyDrillCol.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
+        setupDrillDownTable(keysValueDrillTableView, duplicatesFileNamesdata, valuesDrillCol, () -> {
+            try {
+                return dbCon.runKeysDrilldownStatement(metaDataKey);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }, "Value", "MetaDataKey");
+    }
+
+    // Helper interface for fetching ResultSet
+    @FunctionalInterface
+    interface ResultSetFetcher {
+        ResultSet fetch() throws SQLException;
+    }
+
+    private void setupDrillDownTable(TableView<MetaData> tableView, ObservableList<MetaData> dataList,
+            TableColumn<MetaData, String> column, ResultSetFetcher fetcher, String valueColumn,
+            String... extraColumns) {
+        dataList.clear();
         try {
-            rs = dbCon.runKeysDrilldownStatement(metaDataKey);
+            rs = fetcher.fetch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        valuesDrillCol.setCellValueFactory(cellData -> cellData.getValue().value);
-        KeyDrillCol.setCellValueFactory(cellData -> cellData.getValue().metaDataKey);
-        while (rs.next()) {
-            duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"), "", "", "", ""));
+
+        // Set cell value factory - simplified assuming we bind to the 'value' or
+        // 'fileName' property of MetaData
+        // Note: The original code bound mostly to one main column.
+        // For dupes: bound 'fileName' -> fileName property
+        // For keys: bound 'value' -> value property.
+        // We can pass the property extractor but here we are simplifying.
+        // Actually, the original code used different constructors of MetaData.
+
+        // Let's keep it robust. The original logic for Keys used:
+        // duplicatesFileNamesdata.add(new MetaData(0, rs.getString("MetaDataKey"),
+        // rs.getString("Value"), "", "", "", ""));
+        // The original logic for Dupes used:
+        // duplicatesFileNamesdata.add(new MetaData(0, "", "", rs.getString("FileName"),
+        // "", "", ""));
+
+        // So we need slightly different row mapping.
+
+        try {
+            while (rs.next()) {
+                if (extraColumns.length > 0 && extraColumns[0].equals("MetaDataKey")) {
+                    dataList.add(new MetaData(0, rs.getString("MetaDataKey"), rs.getString("Value"), "", "", "", ""));
+                } else {
+                    dataList.add(new MetaData(0, "", "", rs.getString("FileName"), "", "", ""));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        keysValueDrillTableView.setItems(duplicatesFileNamesdata);
-        keysValueDrillTableView.setVisible(true);
+
+        tableView.setItems(dataList);
+        tableView.setVisible(true);
     }
 
     private void setKeysPieChart() throws SQLException {
@@ -254,7 +291,8 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     protected void setConnectionTestLabel() {
-        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
+        jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(),
+                dbDropDown.getSelectionModel().getSelectedItem());
         dbCon.setJdbcDetails(jdbcDetails);
         try {
             dbCon.setDBConnection();
@@ -270,7 +308,7 @@ public class MetaDataAnalyserController implements Initializable {
     }
 
     void runTikaProcess() {
-        Task<Void> metaTask = new processFolder();
+        metaTask = new processFolder();
         metaScrapeThread = new Thread(metaTask);
         metaScrapeThread.setDaemon(true);
         bar.progressProperty().bind(metaTask.progressProperty());
@@ -278,16 +316,16 @@ public class MetaDataAnalyserController implements Initializable {
 
     }
 
-    //TODO this needs refactoring
+    // TODO this needs refactoring
     class processFolder extends Task<Void> {
         TikaProcessor tp = new TikaProcessor();
-
 
         protected Void call() throws Exception {
 
             tp.setFile(inSelectedFolder.getText());
             File[] pathNames = tp.getFileListToProcess();
-            jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(), dbDropDown.getSelectionModel().getSelectedItem());
+            jdbcDetails = new jdbcDetails(jdbcUrl.getText(), userId.getText(), password.getText(),
+                    dbDropDown.getSelectionModel().getSelectedItem());
             dbCon.setJdbcDetails(jdbcDetails);
             try {
                 dbCon.setDBConnection();
@@ -304,6 +342,9 @@ public class MetaDataAnalyserController implements Initializable {
             int i = 0;
             if (pathNames != null) {
                 for (File file : pathNames) {
+                    if (isCancelled()) {
+                        break;
+                    }
                     i = i + 1;
                     tp.call(file, dbCon);
                     updateProgress(i, pathNames.length);
@@ -314,12 +355,12 @@ public class MetaDataAnalyserController implements Initializable {
             dbCon.close();
             Platform.runLater(() -> {
                 if (pathNames != null) {
-                    Platform.runLater(() -> progressTxt.setText("Process complete " + pathNames.length + " files were processed"));
+                    Platform.runLater(() -> progressTxt
+                            .setText("Process complete " + pathNames.length + " files were processed"));
                 }
             });
             return null;
         }
     }
-
 
 }

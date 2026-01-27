@@ -46,7 +46,7 @@
                                         prefHeight="25.0" prefWidth="134.0" text="Select Folder"
                                         GridPane.columnIndex="1"/>
                                 <Label prefHeight="17.0" prefWidth="277.0" text="Select Input Folder"/>
-                                <Label fx:id="inSelectedFolder" text="G:\SampleFiles" GridPane.rowIndex="1"/>
+                                <Label fx:id="inSelectedFolder" text="..." GridPane.rowIndex="1"/>
                             </GridPane>
                         </VBox>
                     </VBox>
@@ -68,7 +68,7 @@
                                     prefHeight="25.0" prefWidth="134.0" text="Select Folder"
                                     GridPane.columnIndex="1"/>
                             <Label prefHeight="17.0" prefWidth="339.0" text="Select Output Folder"/>
-                            <Label fx:id="outSelectedFolder" text="G:\temp" GridPane.rowIndex="1"/>
+                            <Label fx:id="outSelectedFolder" text="..." GridPane.rowIndex="1"/>
                         </GridPane>
                     </VBox>
                     <VBox prefHeight="300.0" prefWidth="739.0">
